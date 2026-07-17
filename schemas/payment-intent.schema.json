@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agentropolis.example/schemas/payment-intent.schema.json",
+  "title": "AGENTROPOLIS Pay Payment Intent",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "mandate_id", "mandate_version", "agent_id", "amount", "asset", "destination", "purpose", "state", "created_at", "idempotency_key"],
+  "properties": {
+    "id": {"type": "string", "minLength": 1},
+    "mandate_id": {"type": "string", "minLength": 1},
+    "mandate_version": {"type": "integer", "minimum": 1},
+    "agent_id": {"type": "string", "minLength": 1},
+    "amount": {"type": "string", "pattern": "^[0-9]+(\\.[0-9]+)?$"},
+    "asset": {"type": "string", "minLength": 2},
+    "destination": {"type": "string", "minLength": 1},
+    "merchant_id": {"type": "string"},
+    "merchant_category": {"type": "string"},
+    "purpose": {"type": "string", "minLength": 1},
+    "state": {"enum": ["proposed", "policy_review", "approval_required", "approved", "denied", "expired", "revoked", "executing", "succeeded", "failed", "reversed", "refunded"]},
+    "created_at": {"type": "string", "format": "date-time"},
+    "expires_at": {"type": "string", "format": "date-time"},
+    "idempotency_key": {"type": "string", "minLength": 8},
+    "intent_digest": {"type": "string", "minLength": 16},
+    "metadata": {"type": "object"}
+  }
+}
