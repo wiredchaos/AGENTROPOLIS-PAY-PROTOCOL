@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agentropolis.example/schemas/approval.schema.json",
+  "title": "AGENTROPOLIS Pay Approval",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "intent_id", "intent_digest", "mandate_id", "mandate_version", "decision", "decided_by", "decided_at"],
+  "properties": {
+    "id": {"type": "string", "minLength": 1},
+    "intent_id": {"type": "string", "minLength": 1},
+    "intent_digest": {"type": "string", "minLength": 16},
+    "mandate_id": {"type": "string", "minLength": 1},
+    "mandate_version": {"type": "integer", "minimum": 1},
+    "decision": {"enum": ["approved", "denied", "escalated"]},
+    "decided_by": {"type": "string", "minLength": 1},
+    "decided_at": {"type": "string", "format": "date-time"},
+    "reason": {"type": "string"},
+    "expires_at": {"type": "string", "format": "date-time"},
+    "signature": {"type": "string"}
+  }
+}
