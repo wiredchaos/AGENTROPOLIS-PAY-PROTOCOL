@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agentropolis.example/schemas/mandate.schema.json",
+  "title": "AGENTROPOLIS Pay Mandate",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "version", "principal_id", "delegate_id", "status", "limits", "valid_from", "valid_until"],
+  "properties": {
+    "id": {"type": "string", "minLength": 1},
+    "version": {"type": "integer", "minimum": 1},
+    "principal_id": {"type": "string", "minLength": 1},
+    "delegate_id": {"type": "string", "minLength": 1},
+    "status": {"enum": ["active", "suspended", "revoked", "expired"]},
+    "limits": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["max_amount", "currency"],
+      "properties": {
+        "max_amount": {"type": "string", "pattern": "^[0-9]+(\\.[0-9]+)?$"},
+        "currency": {"type": "string", "minLength": 2},
+        "max_transactions": {"type": "integer", "minimum": 1},
+        "approved_merchants": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+        "approved_categories": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+        "human_approval_above": {"type": "string", "pattern": "^[0-9]+(\\.[0-9]+)?$"}
+      }
+    },
+    "valid_from": {"type": "string", "format": "date-time"},
+    "valid_until": {"type": "string", "format": "date-time"},
+    "revocation_uri": {"type": "string", "format": "uri"},
+    "metadata": {"type": "object"}
+  }
+}
