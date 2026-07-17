@@ -1,0 +1,57 @@
+{
+  "mandate": {
+    "id": "mandate_demo_001",
+    "version": 1,
+    "principal_id": "human_neuro",
+    "delegate_id": "agent_procurement_01",
+    "status": "active",
+    "limits": {
+      "max_amount": "100.00",
+      "currency": "USD",
+      "max_transactions": 3,
+      "approved_merchants": ["merchant_demo_01"],
+      "human_approval_above": "50.00"
+    },
+    "valid_from": "2026-07-17T00:00:00Z",
+    "valid_until": "2026-07-18T00:00:00Z"
+  },
+  "payment_intent": {
+    "id": "intent_demo_001",
+    "mandate_id": "mandate_demo_001",
+    "mandate_version": 1,
+    "agent_id": "agent_procurement_01",
+    "amount": "75.00",
+    "asset": "USD",
+    "destination": "merchant_demo_01",
+    "merchant_id": "merchant_demo_01",
+    "purpose": "Approved software service",
+    "state": "approval_required",
+    "created_at": "2026-07-17T16:00:00Z",
+    "idempotency_key": "demo-intent-001",
+    "intent_digest": "sha256:demo-intent-digest"
+  },
+  "approval": {
+    "id": "approval_demo_001",
+    "intent_id": "intent_demo_001",
+    "intent_digest": "sha256:demo-intent-digest",
+    "mandate_id": "mandate_demo_001",
+    "mandate_version": 1,
+    "decision": "approved",
+    "decided_by": "human_neuro",
+    "decided_at": "2026-07-17T16:01:00Z",
+    "reason": "Within mandate after human review"
+  },
+  "receipt": {
+    "id": "receipt_demo_001",
+    "intent_id": "intent_demo_001",
+    "mandate_id": "mandate_demo_001",
+    "approval_id": "approval_demo_001",
+    "outcome": "succeeded",
+    "provider": "mock-provider",
+    "provider_reference": "mock_tx_001",
+    "amount": "75.00",
+    "asset": "USD",
+    "recorded_at": "2026-07-17T16:02:00Z",
+    "evidence_digest": "sha256:demo-evidence-digest"
+  }
+}
