@@ -2,9 +2,9 @@
 
 > Governed economic authority for autonomous agents.
 
-AGENTROPOLIS Pay Protocol is a provider-neutral specification for creating, approving, executing, revoking, and auditing agent-initiated payments across fiat and onchain rails.
+AGENTROPOLIS Pay Protocol is a provider-neutral specification for creating, approving, executing, revoking, and auditing agent-initiated payments across fiat, public onchain, and privacy-preserving settlement rails.
 
-It defines the public trust surface for agentic commerce: identity, mandates, payment intents, approval decisions, execution states, and portable receipts. It does **not** expose production vaults, private signing infrastructure, fraud models, routing intelligence, credentials, or internal enforcement machinery.
+It defines the public trust surface for agentic commerce: identity, mandates, payment intents, approval decisions, execution states, portable receipts, and selective-disclosure evidence boundaries. It does **not** expose production vaults, private signing infrastructure, fraud models, routing intelligence, credentials, or internal enforcement machinery.
 
 ## Status
 
@@ -25,6 +25,8 @@ Identity -> Mandate -> Payment Intent -> Policy Evaluation
          -> Approval -> Provider Execution -> Receipt -> Audit
 ```
 
+Privacy-preserving settlement does not bypass this corridor. It changes who may see transaction evidence, not whether authority must exist.
+
 ## Protocol objects
 
 | Object | Purpose |
@@ -33,6 +35,7 @@ Identity -> Mandate -> Payment Intent -> Policy Evaluation
 | `PaymentIntent` | Describes the proposed economic action before funds move. |
 | `Approval` | Records a policy or human decision, including conditions and expiration. |
 | `Receipt` | Records what actually happened, through which provider, under which authority, and with what result. |
+| `PrivacySettlementEnvelope` | Links a public-safe receipt to encrypted evidence governed by selective-disclosure and retention policy. |
 
 ## Non-negotiable controls
 
@@ -48,6 +51,16 @@ A conforming implementation should support:
 - immutable or tamper-evident receipts
 - separation between proposal, authorization, and execution
 - no secrets or raw payment credentials inside protocol objects
+- minimum-necessary disclosure for privacy-preserving settlement
+- receipted access to protected settlement evidence
+
+## Privacy-preserving settlement
+
+The privacy extension separates a public-safe receipt from encrypted private evidence. A private rail may conceal destination and transaction metadata from public observers, but it must not conceal the mandate, approval basis, or evidence commitment from authorized governance.
+
+The initial network profile documents Monero/XMR as a privacy-preserving settlement option beneath a separate policy boundary such as Hush54. The protocol remains provider-neutral and does not embed wallet custody or signing code.
+
+See [`specification/privacy-settlement.md`](specification/privacy-settlement.md) and [`schemas/privacy-settlement-envelope.schema.json`](schemas/privacy-settlement-envelope.schema.json).
 
 ## Repository map
 
@@ -62,12 +75,14 @@ A conforming implementation should support:
 ├── specification/
 │   ├── protocol.md
 │   ├── authorization-flow.md
-│   └── lifecycle.md
+│   ├── lifecycle.md
+│   └── privacy-settlement.md
 ├── schemas/
 │   ├── mandate.schema.json
 │   ├── payment-intent.schema.json
 │   ├── approval.schema.json
-│   └── receipt.schema.json
+│   ├── receipt.schema.json
+│   └── privacy-settlement-envelope.schema.json
 ├── adapters/
 │   └── README.md
 ├── sdk/
@@ -86,11 +101,13 @@ A conforming implementation should support:
 - example flows
 - governance and threat-model documentation
 - implementation guidance
+- selective-disclosure and evidence-envelope contracts
 
 ### Excluded
 
 - production signing keys or wallet custody
-- processor credentials and webhook secrets
+- processor, node, wallet-RPC, or webhook secrets
+- spend keys, seed phrases, or raw view credentials
 - proprietary policy scoring
 - internal fraud rules
 - private model-routing logic
@@ -102,7 +119,7 @@ A conforming implementation should support:
 
 AGENTROPOLIS Pay Protocol does not process payments. It governs the authority under which agents request and execute economic actions across payment rails.
 
-Payment processors move value. Wallets hold or sign value. Agents propose actions. This protocol binds those actions to identity, policy, permission, evidence, and revocation.
+Payment processors and networks move value. Wallets hold or sign value. Agents propose actions. This protocol binds those actions to identity, policy, permission, evidence, revocation, and controlled disclosure.
 
 ## Example
 

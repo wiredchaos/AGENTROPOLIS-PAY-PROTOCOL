@@ -1,0 +1,73 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agentropolis.example/schemas/privacy-settlement-envelope.schema.json",
+  "title": "AGENTROPOLIS Pay Privacy Settlement Envelope",
+  "description": "Provider-neutral metadata for linking a public-safe receipt to encrypted, selectively disclosed settlement evidence.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "intent_id",
+    "public_receipt_id",
+    "privacy_profile",
+    "rail",
+    "disclosure_policy_id",
+    "evidence_commitment",
+    "encrypted_evidence_reference",
+    "created_at"
+  ],
+  "properties": {
+    "id": {"type": "string", "minLength": 1},
+    "intent_id": {"type": "string", "minLength": 1},
+    "public_receipt_id": {"type": "string", "minLength": 1},
+    "privacy_profile": {"type": "string", "minLength": 1},
+    "rail": {"type": "string", "minLength": 1},
+    "asset": {"type": "string", "minLength": 2},
+    "disclosure_policy_id": {"type": "string", "minLength": 1},
+    "evidence_commitment": {"type": "string", "minLength": 16},
+    "encrypted_evidence_reference": {"type": "string", "minLength": 1},
+    "authorized_viewer_roles": {
+      "type": "array",
+      "items": {"type": "string", "minLength": 1},
+      "uniqueItems": true
+    },
+    "retention_until": {"type": "string", "format": "date-time"},
+    "created_at": {"type": "string", "format": "date-time"},
+    "disclosure_events": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["event_id", "requestor_id", "purpose", "decision", "occurred_at"],
+        "properties": {
+          "event_id": {"type": "string", "minLength": 1},
+          "requestor_id": {"type": "string", "minLength": 1},
+          "purpose": {"type": "string", "minLength": 1},
+          "fields_disclosed": {
+            "type": "array",
+            "items": {"type": "string", "minLength": 1},
+            "uniqueItems": true
+          },
+          "decision": {"enum": ["approved", "denied"]},
+          "approver_id": {"type": "string"},
+          "occurred_at": {"type": "string", "format": "date-time"}
+        }
+      }
+    },
+    "rail_evidence": {
+      "type": "object",
+      "description": "Encrypted or access-controlled references only. Raw keys, seed phrases, wallet credentials, and unrestricted signing material are prohibited.",
+      "additionalProperties": false,
+      "properties": {
+        "network": {"type": "string"},
+        "settlement_reference": {"type": "string"},
+        "destination_reference": {"type": "string"},
+        "verification_material_reference": {"type": "string"},
+        "confirmation_count": {"type": "integer", "minimum": 0},
+        "terminal_status": {
+          "enum": ["succeeded", "failed", "denied", "expired", "reversed", "refunded"]
+        }
+      }
+    }
+  }
+}
