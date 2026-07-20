@@ -1,0 +1,587 @@
+# PAY-PROTOCOL Identity Boundary Evidence — machine-readable audit record
+# Audit mode only. Do not treat this file as a live registry mutation.
+# Proposed registry patch is separate and must not be auto-applied.
+
+repository: wiredchaos/AGENTROPOLIS-PAY-PROTOCOL
+commit_reviewed: e253818a6a6bc39d16130e6cd16ef7baa583cc62
+commit_reviewed_short: e253818
+audit_date_utc: "2026-07-19"
+auditor: cursor-cloud-agent
+audit_program: phase-3-federation-hardening
+audit_mode: read_only_evidence
+cloud_agent_url: https://cursor.com/agents/bc-e4393c67-c00f-4f95-aa5a-91003b234f3a
+
+owners_found:
+  github_owner: wiredchaos
+  owning_user_name: Neuro MetaX
+  owning_user_email: chaoswired@gmail.com
+  codeowners_file: absent
+  maintainers_file: absent
+
+controlling_authority:
+  - wiredchaos/agentropolis/AGENTROPOLIS-CANON.yaml
+  - wiredchaos/agentropolis/docs/FEDERATION-HARDENING-V1.md
+  - wiredchaos/agentropolis/governance/repository-registry.yaml
+  - wiredchaos/agentropolis/issues/85
+controlling_authority_fetchable_in_audit_env: false
+
+prior_identity_non_candidates:
+  - repository: wiredchaos/AGENTROPOLIS-SOVEREIGNTY
+    identity_status: EMPTY-SHELL
+  - repository: wiredchaos/AGENTROPOLIS-ATG
+    identity_status: EMPTY-SHELL
+  - repository: wiredchaos/AGENTROPOLIS-ONTOLOGY
+    identity_status: EMPTY-SHELL
+
+actual_role:
+  - payment protocol
+  - schema-only package
+  - documentation-only package
+  - agent spending controls  # schema/limits only; no evaluator
+  - payment authorization service  # normative prose + approval schema only
+
+not_actual_role:
+  - canonical identity authority
+  - identity adapter
+  - wallet identity adapter
+  - credential service
+  - session service
+  - settlement service
+  - treasury service
+  - escrow service
+  - payment risk engine
+  - custody runtime
+  - chain adapter runtime
+
+# Dual-domain status (identity ≠ payment)
+proposed_status:
+  identity_authority: EMPTY-SHELL
+  payment_protocol: INCUBATING
+proposed_status_scope: identity_authority_and_payment_protocol
+do_not_mark_canonical_identity: true
+do_not_mark_canonical_payment_runtime: true
+confidence: high
+confidence_rationale: >
+  Full tree is 16 tracked files: five JSON Schemas, protocol/privacy docs,
+  one synthetic example, adapter/SDK README stubs, and process docs. No
+  package.json, src/, tests, CI, APIs, databases, wallets, or signing.
+  Identity appears only as free-string principal_id/delegate_id/agent_id/
+  decided_by fields. README corridor claims identity but does not implement
+  an Identity Authority.
+
+tree_evidence:
+  tracked_files_excluding_git_and_license: 15
+  approximate_substance_lines: 578
+  package_manifest: absent
+  runtime_source: absent
+  tests: absent
+  ci_workflows: absent
+  smart_contracts: absent
+  missing_readme_listed_files:
+    - specification/authorization-flow.md
+    - specification/lifecycle.md
+
+identity_entities:
+  human_principal:
+    status: reference_only
+    path: schemas/mandate.schema.json
+    field: principal_id
+    typed: false
+    storage: none
+  organization:
+    status: missing
+  agent:
+    status: reference_only
+    paths:
+      - schemas/mandate.schema.json#delegate_id
+      - schemas/payment-intent.schema.json#agent_id
+    typed: false
+    storage: none
+  service_account:
+    status: missing
+  credential:
+    status: prohibited_in_protocol_objects
+    evidence:
+      - README.md
+      - SECURITY.md
+  session:
+    status: missing
+  mandate:
+    status: schema_object_only
+    path: schemas/mandate.schema.json
+    notes: payment-domain mandate; not Identity Authority root mandate engine
+  delegation:
+    status: field_only
+    path: schemas/mandate.schema.json#delegate_id
+  capability:
+    status: missing_typed_object
+    notes: limits object is spending policy, not capability PDP
+  consent:
+    status: missing
+  revocation:
+    status: field_and_documentation_only
+    paths:
+      - schemas/mandate.schema.json#revocation_uri
+      - specification/protocol.md
+    bus: absent
+  wallet_link:
+    status: missing
+  device:
+    status: missing
+
+payment_entities:
+  payer:
+    status: implicit_via_principal_id
+  payee:
+    status: schema_field
+    path: schemas/payment-intent.schema.json#destination
+    typed: false
+  merchant:
+    status: schema_fields
+    fields: [merchant_id, merchant_category, approved_merchants]
+  beneficiary:
+    status: missing
+  wallet:
+    status: documentation_boundary_only
+  account:
+    status: missing
+  treasury:
+    status: missing
+  escrow:
+    status: missing
+  payment_intent:
+    status: schema_object
+    path: schemas/payment-intent.schema.json
+  invoice:
+    status: missing
+  transaction:
+    status: provider_reference_only
+    path: schemas/receipt.schema.json#provider_reference
+  settlement:
+    status: privacy_extension_schema_and_docs
+    paths:
+      - schemas/privacy-settlement-envelope.schema.json
+      - specification/privacy-settlement.md
+  refund:
+    status: outcome_enum_and_adapter_op_listed
+  chargeback:
+    status: missing
+  spending_authority:
+    status: mandate_limits_partial
+    path: schemas/mandate.schema.json#limits
+  budget:
+    status: partial
+    fields: [max_amount, max_transactions]
+  allowance:
+    status: missing
+  approval:
+    status: schema_object
+    path: schemas/approval.schema.json
+  signer:
+    status: missing
+  chain:
+    status: free_string_profile
+    paths:
+      - specification/privacy-settlement.md
+      - schemas/privacy-settlement-envelope.schema.json#rail
+  asset:
+    status: free_string
+    fields: [asset, currency]
+  receipt:
+    status: local_schema_not_federation_v1
+    path: schemas/receipt.schema.json
+
+root_identity_candidates:
+  wallet_address:
+    treated_as_root_identity: false
+  blockchain_account:
+    treated_as_root_identity: false
+  payment_account:
+    treated_as_root_identity: false
+  merchant_account:
+    treated_as_root_identity: false
+  api_key:
+    treated_as_root_identity: false
+  transaction_signer:
+    treated_as_root_identity: false
+  custody_account:
+    treated_as_root_identity: false
+  payment_handle:
+    treated_as_root_identity: false
+  email:
+    treated_as_root_identity: false
+  device:
+    treated_as_root_identity: false
+  token_balance:
+    treated_as_root_identity: false
+possession_grants_federation_authority: false
+
+authorization_flow_stages:
+  payment_request:
+    path: schemas/payment-intent.schema.json
+    implemented: schema_only
+  authentication:
+    path: null
+    implemented: false
+  principal_resolution:
+    path: schemas/mandate.schema.json#principal_id
+    implemented: free_string_field_only
+  agent_resolution:
+    path: schemas/payment-intent.schema.json#agent_id
+    implemented: free_string_field_only
+  mandate_lookup:
+    path: schemas/mandate.schema.json
+    implemented: schema_only
+    fail_mode_documented: fail_closed
+  spending_capability:
+    path: schemas/mandate.schema.json#limits
+    implemented: schema_only
+  budget_check:
+    path: schemas/mandate.schema.json#limits
+    implemented: schema_only
+  policy_decision:
+    path: specification/protocol.md
+    implemented: documentation_only
+  risk_decision:
+    path: null
+    implemented: false
+    notes: fraud models explicitly excluded
+  approval_requirement:
+    path: schemas/approval.schema.json
+    implemented: schema_only
+  wallet_or_treasury_selection:
+    path: null
+    implemented: false
+  signing_request:
+    path: null
+    implemented: false
+  settlement:
+    path: adapters/README.md
+    implemented: interface_list_only
+  receipt:
+    path: schemas/receipt.schema.json
+    implemented: schema_only
+  audit:
+    path: null
+    implemented: false
+  revocation_check:
+    path: schemas/mandate.schema.json#revocation_uri
+    implemented: field_and_documentation_only
+
+spending_authority_flags:
+  free_string_principal_references: true
+  wildcard_spending_authority: unspecified_if_merchant_arrays_empty
+  unlimited_budgets: false_max_amount_required
+  permanent_grants: false_valid_until_required
+  client_side_only_checks: not_applicable_no_client
+  wallet_only_authority: false
+  lack_of_downstream_revalidation: no_runtime
+  cached_authorization_surviving_revocation: no_cache_implemented
+
+agent_payment_capabilities:
+  create_payment_intents: schema_allows_no_api
+  approve_payments: normative_must_not_self_approve_unenforced
+  sign_transactions: false
+  select_wallets: false
+  change_destinations: normative_forbidden_after_approval_unenforced
+  increase_budgets: false
+  retry_failed_payments: idempotency_field_only
+  issue_refunds: adapter_op_listed_no_code
+  move_treasury_funds: false
+  create_sub_accounts: false
+  delegate_spending: conceptual_mandate_only
+  self_authorize: prohibited_in_prose_unenforced
+  mint_own_spending_capability: false
+  expand_mandate: false
+  bypass_human_approval: unenforced
+  change_treasury_policy: false
+  substitute_destination_after_approval: prohibited_in_prose_unenforced
+  replay_signed_transactions: no_signer_runtime
+  convert_payment_capability_to_general_authority: false
+
+wallet_model:
+  implemented: false
+  classification_of_integrations: none_implemented
+  future_named_adapters_are: optional_adapter
+
+chain_and_asset_dependencies:
+  - name: monero
+    classification: optional_privacy_settlement_profile
+    path: specification/privacy-settlement.md
+    blocks_chain_agnostic: false
+  - name: xmr
+    classification: optional_asset_profile
+    path: specification/privacy-settlement.md
+    blocks_chain_agnostic: false
+  - name: hush54
+    classification: external_privacy_policy_boundary_reference
+    path: specification/privacy-settlement.md
+    blocks_chain_agnostic: false
+  - name: base
+    classification: optional_adapter_name_only
+    path: adapters/README.md
+    blocks_chain_agnostic: false
+  - name: usdc
+    classification: optional_adapter_name_only
+    path: adapters/README.md
+    blocks_chain_agnostic: false
+  - name: doge
+    classification: optional_adapter_name_only
+    path: adapters/README.md
+    blocks_chain_agnostic: false
+  - name: ethereum
+    classification: not_present
+  - name: solana
+    classification: not_present
+  - name: bitcoin
+    classification: not_present
+  - name: xrp
+    classification: not_present
+  - name: stellar
+    classification: not_present
+  - name: hedera
+    classification: not_present
+
+provider_dependencies:
+  - name: stripe
+    classification: optional_adapter
+    evidence: adapters/README.md
+  - name: apple_pay
+    classification: optional_adapter
+    evidence: adapters/README.md
+  - name: linq
+    classification: optional_adapter
+    evidence: adapters/README.md
+  - name: mock-provider
+    classification: example_only
+    evidence: examples/governed-payment-flow.json
+  - name: coinbase
+    classification: not_present
+  - name: circle
+    classification: not_present
+  - name: privy
+    classification: not_present
+  - name: safe
+    classification: not_present
+  - name: fireblocks
+    classification: not_present
+  - name: turnkey
+    classification: not_present
+  - name: crossmint
+    classification: not_present
+  - name: moonpay
+    classification: not_present
+  - name: paypal
+    classification: not_present
+  - name: square
+    classification: not_present
+  - name: plaid
+    classification: not_present
+  - name: alchemy
+    classification: not_present
+  - name: infura
+    classification: not_present
+
+credentials_and_auth:
+  api_keys: missing
+  oauth: missing
+  jwt: missing
+  wallet_signatures: missing
+  approval_signature_field: unconstrained_optional_string
+  webhook_secrets: documentation_only
+  committed_secrets_found: false
+  hard_coded_keys_found: false
+  plaintext_private_keys_found: false
+
+revocation_behavior:
+  implemented: false
+  documentation_only_mentions: true
+  mandate_status_enum: [active, suspended, revoked, expired]
+  revocation_uri_field: true
+  propagation: none
+  cache_invalidation: none
+  offline_behavior: none
+  receipts_emitted: false
+  audit_events_emitted: false
+  emergency_halt: missing
+
+receipt_coverage:
+  agentropolis_receipt_v1: missing
+  agentropolis_audit_v1: missing
+  agentropolis_revocation_v1: missing
+  local_pay_receipt_schema:
+    path: schemas/receipt.schema.json
+  covered_payment_actions_schema_level:
+    - payment_intent_states
+    - approval_decision
+    - terminal_receipt_outcomes
+  uncovered_required_actions:
+    - wallet_linked
+    - wallet_unlinked
+    - spending_capability_granted
+    - spending_capability_denied
+    - spending_authority_revoked_event
+    - transaction_signed
+    - transaction_broadcast
+    - escrow_released
+    - treasury_transfer
+    - emergency_freeze
+    - recovery
+    - compromised_wallet_response
+
+smart_contracts:
+  present: false
+
+data_and_privacy:
+  production_pii_in_repo: false
+  synthetic_example_only: true
+  privacy_envelope_schema: schemas/privacy-settlement-envelope.schema.json
+  encryption_runtime: absent
+  retention_runtime: field_only
+
+test_coverage:
+  identity_authority_suite: missing
+  payment_conformance_suite: missing
+  ci_workflows: missing
+  cases:
+    missing_principal: missing
+    unauthorized_agent: missing
+    missing_mandate: documentation_only
+    expired_spending_authority: documentation_only
+    revoked_spending_authority: documentation_only
+    budget_exceeded: documentation_only
+    destination_changed: documentation_only
+    invalid_wallet_signature: missing
+    replayed_nonce: documentation_only
+    unsupported_chain: missing
+    unsupported_asset: missing
+    provider_outage: missing
+    rpc_outage: missing
+    settlement_failure: documentation_only
+    duplicate_webhook: documentation_only
+    refund_failure: missing
+    emergency_freeze: missing
+    compromised_wallet: missing
+    revoked_signer: missing
+    chain_reorganization: missing
+    rollback: missing
+    idempotency: implemented_but_untested
+
+risks:
+  - id: R1
+    severity: P0
+    summary: Repository may be mistaken for root identity authority because README lists identity in the trust surface.
+  - id: R2
+    severity: P0
+    summary: principal_id/agent_id/delegate_id/decided_by are free strings unbound to an Identity Authority.
+  - id: R3
+    severity: P0
+    summary: Fail-closed revocation and self-approval bans exist only as prose; no runtime enforcement.
+  - id: R4
+    severity: P1
+    summary: Local receipt schema is not agentropolis.receipt.v1; audit.v1 and revocation.v1 absent.
+  - id: R5
+    severity: P1
+    summary: Spending authority incomplete (no daily/chain/destination matrices; empty merchant allowlist semantics unspecified).
+  - id: R6
+    severity: P2
+    summary: README maps authorization-flow.md and lifecycle.md that are missing from the tree.
+  - id: R7
+    severity: P2
+    summary: Approval signature field has no algorithm, issuer, or audience constraints.
+  - id: R8
+    severity: P3
+    summary: Schema $id host is agentropolis.example placeholder.
+
+canonical_blockers_identity:
+  - no_principal_registry
+  - no_agent_identity_registry
+  - no_credential_or_session_system
+  - free_string_identity_references_only
+  - no_revocation_bus
+  - no_agentropolis_receipt_audit_revocation_v1
+  - no_runtime_api_or_durable_store
+  - no_identity_test_matrix_or_ci
+
+canonical_blockers_payment_runtime:
+  - no_policy_decision_point
+  - no_adapter_implementations
+  - no_sdk_or_conformance_fixtures
+  - no_settlement_executor
+  - no_durable_receipt_store
+
+recommended_domain_boundary:
+  pay_protocol_owns:
+    - payment_intent_schema_and_lifecycle
+    - spending_policy_evaluation_contracts
+    - budgets_and_allowances_as_payment_objects
+    - treasury_routing_adapter_interfaces
+    - wallet_and_custody_adapter_interfaces
+    - settlement_escrow_refund_adapter_contracts
+    - payment_receipts_and_mapping_to_federation_receipts
+    - payment_risk_interfaces
+  identity_authority_owns:
+    - principals
+    - organizations
+    - agent_identity
+    - credentials
+    - sessions
+    - root_mandates
+    - delegation
+    - root_capabilities
+    - revocation_authority
+    - ownership_binding_including_wallet_link_proofs
+  atg_owns:
+    - normative_authorization_message_schemas
+    - mandate_capability_receipt_protocol_contracts
+    - conformance_fixtures
+  ontology_owns:
+    - descriptive_payment_and_money_vocabulary
+    - references_to_canonical_identity_ids
+
+remediation_priorities:
+  P0:
+    - registry_dual_status_identity_EMPTY-SHELL_payment_INCUBATING
+    - bind_principal_agent_fields_to_external_identity_authority
+    - designate_or_create_dedicated_identity_authority
+  P1:
+    - align_pay_receipt_with_agentropolis_receipt_audit_revocation_v1
+    - complete_spending_authority_limit_matrix_semantics
+    - publish_conformance_fixtures_without_claiming_runtime_authority
+  P2:
+    - add_missing_authorization_flow_and_lifecycle_docs_or_fix_readme
+    - constrain_approval_signature_envelope
+    - keep_monero_profile_explicitly_non_custodial
+  P3:
+    - replace_agentropolis.example_schema_ids
+    - annotate_examples_with_identity_authority_source_of_truth
+
+scores:
+  # identity-authority candidate lens
+  identity_clarity: 1
+  wallet_separation: 3
+  principal_binding: 0
+  agent_spending_controls: 1
+  mandate_integration: 2
+  capability_enforcement: 0
+  budget_controls: 2
+  revocation: 1
+  chain_portability: 4
+  provider_portability: 4
+  receipt_coverage: 1
+  audit_durability: 0
+  security: 2
+  privacy: 2
+  test_coverage: 0
+  operational_readiness: 0
+  # informational payment-package lens
+  payment_object_clarity: 3
+  normative_authorization_rules: 3
+  adapter_contract_maturity: 1
+  sdk_conformance: 0
+  implementability: 2
+
+artifacts:
+  evidence_audit: docs/audits/PAY-IDENTITY-BOUNDARY-AUDIT.md
+  remediation_plan: docs/audits/PAY-IDENTITY-REMEDIATION-PLAN.md
+  proposed_registry_patch: docs/audits/PAY-IDENTITY-REGISTRY-PATCH.proposed.yaml

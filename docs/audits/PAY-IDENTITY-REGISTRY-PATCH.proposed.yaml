@@ -1,0 +1,231 @@
+# PROPOSED PATCH ONLY — DO NOT AUTO-APPLY
+#
+# Target file (external repo):
+#   wiredchaos/agentropolis/governance/repository-registry.yaml
+#
+# Purpose:
+#   Record AGENTROPOLIS-PAY-PROTOCOL identity-boundary audit outcome with
+#   SEPARATE fields for payment-domain status and identity-authority status.
+#   Do not declare PAY the canonical identity authority or a live processor.
+#
+# Evidence:
+#   wiredchaos/AGENTROPOLIS-PAY-PROTOCOL@e253818a6a6bc39d16130e6cd16ef7baa583cc62
+#   docs/audits/PAY-IDENTITY-BOUNDARY-AUDIT.md
+#   governance/pay-identity-evidence.yaml
+#
+# Assembly rule:
+#   Do not treat this PR alone as the final registry decision.
+#   Assemble a cross-repository patch in wiredchaos/agentropolis covering
+#   SOVEREIGNTY + ATG + ONTOLOGY + PAY-PROTOCOL.
+#
+# Notes:
+#   - The live registry file was not fetchable from the audit environment
+#     (wiredchaos/agentropolis returned 404 here).
+#   - Maintainers must merge this proposal into the real registry structure.
+#   - Identity-domain status intentionally differs from payment-domain status.
+#   - Do not copy root identity ownership into PAY.
+#   - Do not treat free-string principal_id/agent_id as an identity registry.
+
+# ---------------------------------------------------------------------------
+# Unified diff (illustrative). Adjust indentation/keys to match the live file.
+# ---------------------------------------------------------------------------
+#
+# --- a/governance/repository-registry.yaml
+# +++ b/governance/repository-registry.yaml
+# @@
+#    - repository: wiredchaos/AGENTROPOLIS-PAY-PROTOCOL
+# -    status: <previous-or-inferred>
+# -    domains: [identity, payments, ...]   # if previously over-claimed
+# +    status: EMPTY-SHELL
+# +    status_scope: identity_authority
+# +    # --- separate payment vs identity fields (required) ---
+# +    actual_payment_role:
+# +      - payment protocol
+# +      - schema-only package
+# +      - documentation-only package
+# +    payment_status: INCUBATING
+# +    identity_status: EMPTY-SHELL
+# +    actual_identity_role: empty_shell_payment_domain_references_only
+# +    domains:
+# +      identity_authority: EMPTY-SHELL
+# +      payment_protocol: INCUBATING
+# +      settlement_adapters: ABSENT
+# +      wallet_custody: ABSENT
+# +    canonical: false
+# +    identity_authority: false
+# +    payment_runtime: false
+# +    owns:
+# +      - pay_mandate_schema
+# +      - payment_intent_schema
+# +      - approval_schema
+# +      - pay_receipt_schema
+# +      - privacy_settlement_envelope_schema
+# +      - adapter_interface_docs
+# +    does_not_own:
+# +      - canonical_identity_authority
+# +      - principal_registry
+# +      - agent_identity_registry
+# +      - credential_service
+# +      - session_management
+# +      - root_mandate_engine
+# +      - revocation_bus
+# +      - wallet_identity_lifecycle
+# +      - settlement_execution
+# +      - treasury_custody
+# +      - sovereignty_model_routing
+# +    evidence:
+# +      commit: e253818a6a6bc39d16130e6cd16ef7baa583cc62
+# +      audit: wiredchaos/AGENTROPOLIS-PAY-PROTOCOL/docs/audits/PAY-IDENTITY-BOUNDARY-AUDIT.md
+# +      machine: wiredchaos/AGENTROPOLIS-PAY-PROTOCOL/governance/pay-identity-evidence.yaml
+# +    confidence: high
+# +    codex_required_next: true
+# +    notes: >
+# +      PAY-PROTOCOL does not implement root identity. It is an incubating
+# +      payment-protocol schema/docs surface with free-string principal/agent
+# +      references. It must consume a separate Identity Authority. Wallet
+# +      possession must never become root AGENTROPOLIS authority.
+
+proposed_entry:
+  repository: wiredchaos/AGENTROPOLIS-PAY-PROTOCOL
+  commit_reviewed: e253818a6a6bc39d16130e6cd16ef7baa583cc62
+
+  # Primary status remains identity-scoped for federation hardening consistency
+  status: EMPTY-SHELL
+  status_scope: identity_authority
+  canonical: false
+  identity_authority: false
+  payment_runtime: false
+  confidence: high
+
+  # -------------------------------------------------------------------------
+  # REQUIRED SEPARATE FIELDS: actual payment vs identity
+  # -------------------------------------------------------------------------
+  actual_payment:
+    role:
+      - payment protocol
+      - schema-only package
+      - documentation-only package
+    status: INCUBATING
+    runtime: false
+    processor: false
+    wallet_custody: false
+    settlement_execution: false
+    objects_present:
+      - Mandate
+      - PaymentIntent
+      - Approval
+      - Receipt
+      - PrivacySettlementEnvelope
+    objects_absent:
+      - treasury
+      - escrow_engine
+      - invoice
+      - chargeback
+      - risk_engine
+
+  actual_identity:
+    role: empty_shell_payment_domain_references_only
+    status: EMPTY-SHELL
+    root_identity_implemented: false
+    reference_fields_only:
+      - principal_id
+      - delegate_id
+      - agent_id
+      - decided_by
+    reference_typing: free_string
+    wallet_as_root_identity: false
+    payment_handle_as_root_identity: false
+    api_key_as_root_identity: false
+
+  # Convenience mirrors for registry consumers that expect flat keys
+  actual_payment_role:
+    - payment protocol
+    - schema-only package
+    - documentation-only package
+  payment_status: INCUBATING
+  identity_status: EMPTY-SHELL
+  actual_identity_role: empty_shell_payment_domain_references_only
+
+  domains:
+    identity_authority: EMPTY-SHELL
+    payment_protocol: INCUBATING
+    settlement_adapters: ABSENT
+    wallet_custody: ABSENT
+    agent_spending_controls: SCHEMA_ONLY
+
+  owns:
+    - pay_mandate_schema
+    - payment_intent_schema
+    - approval_schema
+    - pay_receipt_schema
+    - privacy_settlement_envelope_schema
+    - adapter_interface_docs
+    - sdk_boundary_docs
+    - synthetic_governed_payment_example
+
+  does_not_own:
+    - canonical_identity_authority
+    - principal_registry
+    - agent_identity_registry
+    - credential_service
+    - session_management
+    - root_mandate_engine
+    - delegation_engine
+    - capability_evaluation_runtime
+    - revocation_bus
+    - wallet_identity_lifecycle
+    - settlement_execution
+    - treasury_custody
+    - sovereignty_model_routing
+
+  consumes:
+    identity_authority:
+      required: true
+      ids: [principal_id, agent_id, delegate_id, decided_by]
+    atg:
+      required: recommended
+      for: [normative_authorization_message_schemas, receipt_audit_revocation_v1]
+    ontology:
+      required: optional
+      for: [regulated_digital_money_vocabulary]
+
+  recommended_consumers:
+    identity_authority_runtime: supplies_principal_and_agent_ids
+    settlement_adapters: execute_under_approved_intent_digest
+    mission_control: observes_payment_authority_events
+
+  evidence:
+    audit_markdown: docs/audits/PAY-IDENTITY-BOUNDARY-AUDIT.md
+    remediation_plan: docs/audits/PAY-IDENTITY-REMEDIATION-PLAN.md
+    machine_evidence: governance/pay-identity-evidence.yaml
+
+  risks:
+    - misclassification_as_canonical_identity
+    - free_string_principal_agent_unbound
+    - normative_fail_closed_unenforced
+    - local_receipt_schema_diverges_from_federation_v1
+    - empty_merchant_allowlist_semantics_unspecified
+
+  remediation:
+    priority: P0
+    next: bind_pay_identity_refs_to_ida_and_assemble_hub_registry
+
+  codex_required_next: true
+
+  hub_assembly_gate:
+    do_not_finalize_from_single_pr: true
+    include_with:
+      - wiredchaos/AGENTROPOLIS-SOVEREIGNTY
+      - wiredchaos/AGENTROPOLIS-ATG
+      - wiredchaos/AGENTROPOLIS-ONTOLOGY
+      - wiredchaos/AGENTROPOLIS-PAY-PROTOCOL
+    target_repo: wiredchaos/agentropolis
+    notes: >
+      All four audited candidates are EMPTY-SHELL for identity authority.
+      PAY is INCUBATING for payment protocol schemas only.
+
+# If the registry uses a map keyed by repository slug, equivalent form:
+#
+# repositories:
+#   AGENTROPOLIS-PAY-PROTOCOL:
+#     <<: *proposed_entry_fields_above
